@@ -228,6 +228,36 @@ public class LlenaTabla {
 		
 	}
 	
+	//Valida si la asignacion es booleana
+	public boolean esBooleano(String asignacion) {
+		return asignacion.equals("false") || asignacion.equals("true");
+	}
+	
+	//Valida si la asignacion es entera
+	public boolean esIntOChar(String asignacion) {
+		if (asignacion.matches("[0-9]+")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	//Valida si la asignacion es double
+	public boolean esDouble(String asignacion) {
+		if (asignacion.matches("[0-9]+\\.?[0-9]*")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/*public boolean revisaDeclaraciones(ArrayList<TablaSimbolos> tablaSimbolos) {
+		for (int i = 0; i < tablaSimbolos.size(); i++) {
+			TablaSimbolos s = tablaSimbolos.get(i);
+		}
+		return true;
+	}*/
+	
 	//Valida si una declaración ya fue agregada a la tabla
 	public int estaRepedio(String nombre) {
 		int esta = -1;
