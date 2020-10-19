@@ -10,7 +10,7 @@ public class LlenaTabla {
 			num = 50, numd=51, ID = 52;
 
 	ArrayList<Token> tokenRC;
-	ArrayList<TablaSimbolos> valoresTab = new ArrayList<TablaSimbolos>();
+	ArrayList<TablaSimbolos> tablaSimbolos = new ArrayList<TablaSimbolos>();
 	ArrayList<String> errores = new ArrayList<String>();
 
 	public LlenaTabla(ArrayList<Token> tokenrc) {
@@ -186,23 +186,23 @@ public class LlenaTabla {
 		// c�digo en el .txt
 		for (int i = 0; i < tokenRC.size(); i++) {
 
-			for (int j = 0; j < valoresTab.size(); j++) {
-				if (tokenRC.get(i).getToken().equals(valoresTab.get(j).nombre))
+			for (int j = 0; j < tablaSimbolos.size(); j++) {
+				if (tokenRC.get(i).getToken().equals(tablaSimbolos.get(j).nombre))
 					if (tipo[i] == ID && tipo[i + 1] == EQ) {
 
 						if (tipo[i + 3] == mas || tipo[i + 3] == menos || tipo[i + 3] == div || tipo[i + 3] == mult) {
-							valoresTab.set(j,
-									new TablaSimbolos(valoresTab.get(j).rango, valoresTab.get(j).tipo,
-											valoresTab.get(j).nombre,
+							tablaSimbolos.set(j,
+									new TablaSimbolos(tablaSimbolos.get(j).rango, tablaSimbolos.get(j).tipo,
+											tablaSimbolos.get(j).nombre,
 											tokenRC.get(i + 2).getToken() + " " + tokenRC.get(i + 3).getToken() + " "
 													+ tokenRC.get(i + 4).getToken(),
-											valoresTab.get(j).renglon, valoresTab.get(j).columna));
+											tablaSimbolos.get(j).renglon, tablaSimbolos.get(j).columna));
 						} else {
 
-							valoresTab.set(j,
-									new TablaSimbolos(valoresTab.get(j).rango, valoresTab.get(j).tipo,
-											valoresTab.get(j).nombre, tokenRC.get(i + 2).getToken(),
-											valoresTab.get(j).renglon, valoresTab.get(j).columna));
+							tablaSimbolos.set(j,
+									new TablaSimbolos(tablaSimbolos.get(j).rango, tablaSimbolos.get(j).tipo,
+											tablaSimbolos.get(j).nombre, tokenRC.get(i + 2).getToken(),
+											tablaSimbolos.get(j).renglon, tablaSimbolos.get(j).columna));
 
 						}
 					}
@@ -210,6 +210,7 @@ public class LlenaTabla {
 
 		}
 		
+		revisaDeclaraciones(tablaSimbolos);
 		
 		// Imprime la tabla de simbolos con sus datos siempre y cuando no haya errores
 		if (errores.isEmpty()) {
@@ -217,38 +218,97 @@ public class LlenaTabla {
 		Main.consola.append("\n" + "No." + blancos("no.       ") + "Modificador" + blancos("modificador") + "Tipo"
 				+ blancos("tipo") + "Nombre" + blancos("nombre") + "Valor" + blancos("valor") + "Renglon"
 				+ blancos("renglon") + "Columna o No. de token" + blancos("columna o No. de token") + "\n");
-		for (int i = 0; i < valoresTab.size(); i++) {
-			Main.consola.append((i + 1) +"    "+ blancos(String.valueOf((i + 1 + "    " ))) + valoresTab.get(i).rango
-					+ "   "+blancos(valoresTab.get(i).rango) +valoresTab.get(i).tipo +" "+ blancos(valoresTab.get(i).tipo)
-					+ "    "+valoresTab.get(i).nombre + blancos(valoresTab.get(i).nombre)+ "    " + valoresTab.get(i).valor
-					+ blancos(valoresTab.get(i).valor)+ "    " + valoresTab.get(i).renglon + blancos(valoresTab.get(i).renglon)+ "        "
-					+ valoresTab.get(i).columna + blancos(valoresTab.get(i).columna)+"\n");
+		for (int i = 0; i < tablaSimbolos.size(); i++) {
+			Main.consola.append((i + 1) +"    "+ blancos(String.valueOf((i + 1 + "    " ))) + tablaSimbolos.get(i).rango
+					+ "   "+blancos(tablaSimbolos.get(i).rango) + tablaSimbolos.get(i).tipo +" "+ blancos(tablaSimbolos.get(i).tipo)
+					+ "    "+tablaSimbolos.get(i).nombre + blancos(tablaSimbolos.get(i).nombre)+ "    " + tablaSimbolos.get(i).valor
+					+ blancos(tablaSimbolos.get(i).valor)+ "    " + tablaSimbolos.get(i).renglon + blancos(tablaSimbolos.get(i).renglon)+ "        "
+					+ tablaSimbolos.get(i).columna + blancos(tablaSimbolos.get(i).columna)+"\n");
 		}
 		}
 		
 	}
 	
+	//Valida si la asignacion es booleana
+	public boolean esBooleano(String asignacion) {
+		return asignacion.equals("false") || asignacion.equals("true");
+	}
+	
+	//Valida si la asignacion es entera
+	public boolean esIntOChar(String asignacion) {
+		if (asignacion.matches("[0-9]+")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	//Valida si la asignacion es double
+	public boolean esDouble(String asignacion) {
+		if (asignacion.matches("[0-9]+\\.?[0-9]*")) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	//Comprueba que las asignaciones sean correctas
+	public void revisaDeclaraciones(ArrayList<TablaSimbolos> tablaSimbolos) {
+		for (int i = 0; i < tablaSimbolos.size(); i++) {
+			TablaSimbolos s = tablaSimbolos.get(i);
+			if (s.tipo.equals("int") && !esIntOChar(s.valor)) {
+				if (esDouble(s.valor)) {
+					errores.add("La variable entera " + s.nombre + " del renglón" + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo double");
+				}
+				if (esBooleano(s.valor)) {
+					errores.add("La variable entera " + s.nombre + " del renglon " + s.renglon + " columna " + s.columna + " se le intenta asginar un valor de tipo booleano");
+				}
+			}
+			if (s.tipo.equals("double") && !esDouble(s.valor)) {
+				if (esBooleano(s.valor)) {
+					errores.add("La variable double " + s.nombre + " del renglón " + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo booleano");
+				}	
+			}
+			if (s.tipo.equals("boolean") && !esBooleano(s.valor)) {
+				if (esIntOChar(s.valor)) {
+					errores.add("La variable booleana " + s.nombre + " del renglon " + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo entero");
+				}
+				if (esDouble(s.valor)) {
+					errores.add("La variable booleana " + s.nombre + " del renglon " + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo double");
+				}
+			}
+			if (s.tipo.equals("char") && !esIntOChar(s.valor)) {
+				if (esDouble(s.valor)) {
+					errores.add("La variable char " + s.nombre + " del renglon " + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo dobule");
+				}
+				if (esBooleano(s.valor)) {
+					errores.add("La variable char " + s.nombre + " del renglon " + s.renglon + " columna " + s.columna + " se le intenta asignar un valor de tipo booleano");
+				}
+			}
+		}
+	}
+	
 	//Valida si una declaración ya fue agregada a la tabla
 	public int estaRepedio(String nombre) {
 		int esta = -1;
-		for (int i = 0; i < valoresTab.size(); i ++) {
-			if (valoresTab.get(i).nombre.equals(nombre)) {
+		for (int i = 0; i < tablaSimbolos.size(); i ++) {
+			if (tablaSimbolos.get(i).nombre.equals(nombre)) {
 				esta=i;
 			}
 		}
 		return esta;
 	}
         
-	
+	//Método que agrega las declaraciones a la tabla de signos
 	public void agregaTabla(String ran, String tip, String nom, String val, String reng, String col) {
 		int rep = estaRepedio(nom);
 		System.out.println("Respuesta de rep antes de entrar al if " + rep);
 		if (rep == -1) {System.out.println("Entro al if rep = " + rep);
-			valoresTab.add(new TablaSimbolos(ran, tip, nom, val, reng, col));
+			tablaSimbolos.add(new TablaSimbolos(ran, tip, nom, val, reng, col));
 			System.out.println("Guardo los datos rep = " + rep);
 		}else {System.out.println("No entro al if rep = " + rep);
-			System.out.println("La variable " + nom + " ya ha sido decladara en el renglón " + valoresTab.get(rep).renglon + " columna " + valoresTab.get(rep).columna);
-			errores.add("La variable " + nom + " ya ha sido decladara en el renglón " + valoresTab.get(rep).renglon + " columna " + valoresTab.get(rep).columna);
+			System.out.println("La variable " + nom + " ya ha sido decladara en el renglón " + tablaSimbolos.get(rep).renglon + " columna " + tablaSimbolos.get(rep).columna);
+			errores.add("La variable " + nom + " ya ha sido decladara en el renglón " + tablaSimbolos.get(rep).renglon + " columna " + tablaSimbolos.get(rep).columna);
 		}
 		System.out.println("Valor de rep al finalizar el metodo = " + rep);
 		
@@ -264,8 +324,5 @@ public class LlenaTabla {
 
 		return blancos;
 	}
-	
-	public ArrayList<TablaSimbolos>  getValoresTabla(){
-		return this.valoresTab;
-	}
+
 }
