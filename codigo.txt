@@ -1,5 +1,4 @@
 class a4{
-int b8 =0;
-double b8=6;
+int b9 = true;
 
 }
