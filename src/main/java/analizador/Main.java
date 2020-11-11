@@ -28,28 +28,23 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 public class Main extends JFrame implements ActionListener {
 
 	public static JTextArea area, consola;
-	private JButton btnCompilar, btnAbrir, btnCerrar;
+	private JButton btnCompilar, btnAbrir;
 	
 	public Main() {
+		super("Compilador");
+		setLayout(null);
+		setSize(500, 730);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		hazInterfaz();
 	}
 	
 	
-	public static void main(String[] args) throws UnsupportedLookAndFeelException {
-		UIManager.setLookAndFeel(new NimbusLookAndFeel());
+	public static void main(String[] args) {
 		new Main();
 	}
 
 	private void hazInterfaz() {
-		setLayout(null);
-		setUndecorated(true);
-		setSize(500, 700);
-		setLocationRelativeTo(null);
-		setShape(new RoundRectangle2D.Double(0, 0, 500, 700, 20, 20));
-
-		PanelGradiente panel = new PanelGradiente(	);
-		panel.setBounds(0,0,500,700);
-		
 		area = new JTextArea();
 		consola = new JTextArea();
 		consola.setEnabled(false);
@@ -60,11 +55,7 @@ public class Main extends JFrame implements ActionListener {
 		btnAbrir= new JButton("Abrir archivo");
 		btnAbrir.setBounds(263, 5, 150, 40);
 		btnAbrir.addActionListener(this);
-		btnCerrar= new JButton("X");
-		btnCerrar.setBounds(440,5, 40,40);
-		btnCerrar.setBackground(Color.decode("#65417A"));
-		btnCerrar.addActionListener(this);
-		
+
 		JScrollPane scrollPaneArea = new JScrollPane(area);
 		scrollPaneArea.setBounds(30, 50, 440, 300);
 		JScrollPane scrollPaneConsola = new JScrollPane(consola);
@@ -74,17 +65,11 @@ public class Main extends JFrame implements ActionListener {
 		add(scrollPaneConsola);
 		add(btnAbrir);
 		add(btnCompilar);
-		add(btnCerrar);
-		add(panel);
 		setVisible(true);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
-		if(e.getSource()==btnCerrar) 
-			System.exit(0);
-			
 		
 		if(e.getSource() == btnCompilar) {
 			generarArchivo();

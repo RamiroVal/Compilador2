@@ -1,4 +1,0 @@
-class a4{
-int b9 = true;
-
-}
