@@ -13,7 +13,7 @@ public class VistaCuadruplos extends JDialog{
 
 	public VistaCuadruplos(JFrame frame, String titulo,  String[] titulos, String[][] datos) {
 		super(frame, titulo, true);
-        setSize(700, 200);
+        setSize(700, 600);
         setLocationRelativeTo(null);
 		
 	JTable tblTabla = new JTable(datos, titulos);

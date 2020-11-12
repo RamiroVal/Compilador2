@@ -1,11 +1,13 @@
 public class c1{
-int a1 = 1;
-int b1 = 2;
-int c1 = 3;
-int d1 = 4;
-int e1 = 5;
+	double a1 = 1;
+	double a2 = 5;
+	double a3 = 8;
+	double a4 = 7;
+	double a5 = 3;
 
-int x1 = a1 + b1 / c1 * d1;
-int x2 = a1 * b1 / (c1 + d1 - e1);
-int x3 = (a1 + b1 - c1 + d1) - e1;
+	double var1 = a1 + a2 / a3;
+	double var2 = a1 * a2 / (a3 + a4 - a5);
+	double var3 = (a1- a3 + a4) - a5;
+
+
 }

@@ -89,14 +89,6 @@ public class Main extends JFrame implements ActionListener {
 						lista[i][4] = cuadruplos.get(i).getResultado();
 				}
 				
-				for (int i = 0; i < cuadruplos.size(); i++) {
-					System.out.println(lista[i][0]);
-					System.out.println(lista[i][1]);
-					System.out.println(lista[i][2]);
-					System.out.println(lista[i][3]);
-					System.out.println(lista[i][4]);
-				}
-				
 				String[] titulos = {"Expresión", "Operador", "Operando1", "Operando2", "Resultado"};
 				
 				VistaCuadruplos cuadruplos = new VistaCuadruplos(this, "Cuadruplos", titulos, lista);
@@ -170,18 +162,6 @@ public class Main extends JFrame implements ActionListener {
 			}
 			CodigoIntermedio codigoIntermedio = new CodigoIntermedio(this.area.getText().trim(), tablaSimbolos);
 			cuadruplos = codigoIntermedio.getCuadruplos();
-			
-			
-			System.out.println("|   Expresión   |   Operador   |   Operando1   |   Operando2   |   Resultado   |");
-			
-			
-			for (int i = 0; i < cuadruplos.size(); i++) {
-				System.out.println("Operador: " + cuadruplos.get(i).getOperador());
-				System.out.println("Expresion: " + cuadruplos.get(i).getExpresion());
-				System.out.println("Operando 1: " + cuadruplos.get(i).getOperando1());
-				System.out.println("Operando 2: " + cuadruplos.get(i).getOperando2());
-				System.out.println("Resultado: " + cuadruplos.get(i).getResultado());
-			}
 		//}
 	}
 	

@@ -15,6 +15,7 @@ public class CodigoIntermedio {
 	private ArrayList<Cuadruplo> cuadruplos;
 	private int auxCount = 1; 
 	private ArrayList<TablaSimbolos> tablaSimbolos;
+	private double total;
 
 	public CodigoIntermedio(String code,ArrayList<TablaSimbolos> tablaSimbolos) {
 		this.code = code;
@@ -40,7 +41,7 @@ public class CodigoIntermedio {
 			
 			ArrayList<String> expressionList =  new ArrayList<String>(Arrays.asList(expresionArr));
 		    this.solveOperaciones(expressionList, expresion);
-		    auxCount = 0;
+		    auxCount = 1;
 		}
 
 	}
