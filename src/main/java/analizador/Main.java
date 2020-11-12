@@ -1,15 +1,10 @@
 package main.java.analizador;
 import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.RoundRectangle2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -18,17 +13,15 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class Main extends JFrame implements ActionListener {
 
 	public static JTextArea area, consola;
-	private JButton btnCompilar, btnAbrir;
+	private JButton btnCompilar, btnAbrir, btnCuadruplos;
+	private ArrayList<TablaSimbolos> tablaSimbolos;
+	private ArrayList<Cuadruplo> cuadruplos;
 	
 	public Main() {
 		super("Compilador");
@@ -50,11 +43,16 @@ public class Main extends JFrame implements ActionListener {
 		consola.setEnabled(false);
 		consola.setDisabledTextColor(Color.BLACK);
 		btnCompilar= new JButton("Compilar");
-		btnCompilar.setBounds(88, 5, 150, 40);
+		btnCompilar.setBounds(30, 5, 100, 40);
 		btnCompilar.addActionListener(this);
-		btnAbrir= new JButton("Abrir archivo");
-		btnAbrir.setBounds(263, 5, 150, 40);
+		btnAbrir= new JButton("Buscar");
+		btnAbrir.setBounds(200, 5, 100, 40);
 		btnAbrir.addActionListener(this);
+		
+		btnCuadruplos = new JButton("Cuadruplos");
+		btnCuadruplos.setBounds(370, 5, 100, 40);
+		btnCuadruplos.addActionListener(this);
+		
 
 		JScrollPane scrollPaneArea = new JScrollPane(area);
 		scrollPaneArea.setBounds(30, 50, 440, 300);
@@ -65,6 +63,7 @@ public class Main extends JFrame implements ActionListener {
 		add(scrollPaneConsola);
 		add(btnAbrir);
 		add(btnCompilar);
+		add(btnCuadruplos);
 		setVisible(true);
 	}
 	
@@ -77,21 +76,51 @@ public class Main extends JFrame implements ActionListener {
 			return;
 		}
 		
-		JFileChooser chooser = new JFileChooser();
-		int opcion = chooser.showSaveDialog(this);
-		if (opcion == JFileChooser.APPROVE_OPTION) {
-			File f = chooser.getSelectedFile();
-
-			try {
-				BufferedReader br= new BufferedReader(new FileReader(f));
-				String lineaActual;
-				while ((lineaActual = br.readLine()) != null) {
-				    area.append(lineaActual+"\n");
+		if(e.getSource() == btnCuadruplos) {
+			if (cuadruplos.isEmpty() || area.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "No hay operaciones", "Vacío", JOptionPane.ERROR_MESSAGE);
+			}else {
+				String[][] lista = new String[cuadruplos.size()][5];
+				for (int i = 0; i < cuadruplos.size(); i++) {
+						lista[i][0] = cuadruplos.get(i).getExpresion();
+						lista[i][1] = cuadruplos.get(i).getOperador();
+						lista[i][2] = cuadruplos.get(i).getOperando1();
+						lista[i][3] = cuadruplos.get(i).getOperando2();
+						lista[i][4] = cuadruplos.get(i).getResultado();
 				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
+				
+				for (int i = 0; i < cuadruplos.size(); i++) {
+					System.out.println(lista[i][0]);
+					System.out.println(lista[i][1]);
+					System.out.println(lista[i][2]);
+					System.out.println(lista[i][3]);
+					System.out.println(lista[i][4]);
+				}
+				
+				String[] titulos = {"Expresión", "Operador", "Operando1", "Operando2", "Resultado"};
+				
+				VistaCuadruplos cuadruplos = new VistaCuadruplos(this, "Cuadruplos", titulos, lista);
+				cuadruplos.setVisible(true);
 			}
+		}
+		
+		if (e.getSource() == btnAbrir) {
+			JFileChooser chooser = new JFileChooser();
+			int opcion = chooser.showSaveDialog(this);
+			if (opcion == JFileChooser.APPROVE_OPTION) {
+				File f = chooser.getSelectedFile();
+
+				try {
+					BufferedReader br= new BufferedReader(new FileReader(f));
+					String lineaActual;
+					while ((lineaActual = br.readLine()) != null) {
+						area.append(lineaActual+"\n");
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			
+			}
 		}
 		
 	}
@@ -130,38 +159,31 @@ public class Main extends JFrame implements ActionListener {
 			consola.append(a1.get(i)+ "\n");
 		}
 
-		if (a1.get(0).equals("No hay errores lexicos")) {
+		//if (a1.get(0).equals("No hay errores lexicos")) {
 			s = new Sintactico(analizador.tokenRC);
 			t = new LlenaTabla(analizador.tokenRC);
-			
+			tablaSimbolos = t.tablaSimbolos;
 			ArrayList<String> errores = t.errores;
 			
-				for (int i = 0; i < errores.size(); i++) {
-					consola.append(errores.get(i) + "\n");
+			for (int i = 0; i < errores.size(); i++) {
+				consola.append(errores.get(i) + "\n");
 			}
-						
-			/*System.out.println("----------IMPRIME TOKENRC---------------");{
-				for (int i = 0; i < analizador.tokenRC.size(); i++) {
-					System.out.print(analizador.tokenRC.get(i).getColumna() + " | ");
-					System.out.print(analizador.tokenRC.get(i).getRenglon() + " | ");
-					System.out.print(analizador.tokenRC.get(i).getTipo() + " | ");
-					System.out.println(analizador.tokenRC.get(i).getToken());
-				}
-			}*/
-		}
+			CodigoIntermedio codigoIntermedio = new CodigoIntermedio(this.area.getText().trim(), tablaSimbolos);
+			cuadruplos = codigoIntermedio.getCuadruplos();
+			
+			
+			System.out.println("|   Expresión   |   Operador   |   Operando1   |   Operando2   |   Resultado   |");
+			
+			
+			for (int i = 0; i < cuadruplos.size(); i++) {
+				System.out.println("Operador: " + cuadruplos.get(i).getOperador());
+				System.out.println("Expresion: " + cuadruplos.get(i).getExpresion());
+				System.out.println("Operando 1: " + cuadruplos.get(i).getOperando1());
+				System.out.println("Operando 2: " + cuadruplos.get(i).getOperando2());
+				System.out.println("Resultado: " + cuadruplos.get(i).getResultado());
+			}
+		//}
 	}
 	
-	class PanelGradiente extends JPanel {
-		private static final long serialVersionUID = 1L;
-		
-		@Override
-		public void paint(Graphics g) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setPaint(new GradientPaint(0, 0, Color.decode("#5A415B"), 500, 50, Color.decode("#65417A")));
-			g2.fillRect(0, 0, getWidth(), 50);
-			g2.setPaint(new GradientPaint(0, 0, Color.decode("#78415B"), 500, 700, Color.decode("#75417A")));
-			g2.fillRect(0, 50, getWidth(), 670);
-		}
-	}
 
 }
