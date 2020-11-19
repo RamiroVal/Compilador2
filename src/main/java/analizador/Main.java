@@ -1,5 +1,6 @@
 package main.java.analizador;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -26,9 +28,10 @@ public class Main extends JFrame implements ActionListener {
 	public Main() {
 		super("Compilador");
 		setLayout(null);
-		setSize(500, 730);
+		setSize(800, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 		hazInterfaz();
 	}
 	
@@ -43,27 +46,36 @@ public class Main extends JFrame implements ActionListener {
 		consola.setEnabled(false);
 		consola.setDisabledTextColor(Color.BLACK);
 		btnCompilar= new JButton("Compilar");
-		btnCompilar.setBounds(30, 5, 100, 40);
+		btnCompilar.setBounds(480, 50, 100, 40);
 		btnCompilar.addActionListener(this);
 		btnAbrir= new JButton("Buscar");
-		btnAbrir.setBounds(200, 5, 100, 40);
+		btnAbrir.setBounds(480, 100, 100, 40);
 		btnAbrir.addActionListener(this);
 		
 		btnCuadruplos = new JButton("Cuadruplos");
-		btnCuadruplos.setBounds(370, 5, 100, 40);
+		btnCuadruplos.setBounds(480, 150, 100, 40);
 		btnCuadruplos.addActionListener(this);
 		
+		JLabel lblArea = new JLabel("Area de Trabajo");
+		lblArea.setBounds(148, 15, 174, 30);
+		lblArea.setFont(new Font("Calibri", Font.BOLD, 26));
+		
+		JLabel lblConsola = new JLabel("Consola");
+		lblConsola.setBounds(337, 370, 86, 30);
+		lblConsola.setFont(new Font("Calibri", Font.BOLD, 26));
 
 		JScrollPane scrollPaneArea = new JScrollPane(area);
 		scrollPaneArea.setBounds(30, 50, 440, 300);
 		JScrollPane scrollPaneConsola = new JScrollPane(consola);
-		scrollPaneConsola.setBounds(30, 350, 440, 330);
+		scrollPaneConsola.setBounds(30, 410, 740, 330);
 		
 		add(scrollPaneArea);
 		add(scrollPaneConsola);
 		add(btnAbrir);
 		add(btnCompilar);
 		add(btnCuadruplos);
+		add(lblConsola);
+		add(lblArea);
 		setVisible(true);
 	}
 	
